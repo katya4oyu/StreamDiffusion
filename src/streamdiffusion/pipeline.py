@@ -26,6 +26,7 @@ class StreamDiffusion:
         frame_buffer_size: int = 1,
         cfg_type: Literal["none", "full", "self", "initialize"] = "self",
     ) -> None:
+        print("!!! Stream Diffusion INIT !!!")
         self.device = pipe.device
         self.dtype = torch_dtype
         self.generator = None
