@@ -9,6 +9,7 @@ from diffusers.image_processor import VaeImageProcessor
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion_img2img import (
     retrieve_latents,
 )
+from torch import FloatTensor
 
 from streamdiffusion.image_filter import SimilarImageFilter
 
@@ -261,6 +262,19 @@ class StreamDiffusion:
             do_classifier_free_guidance=False,
         )
         self.prompt_embeds = encoder_output[0].repeat(self.batch_size, 1, 1)
+
+    @torch.no_grad()
+    def encode_prompt(self, prompt: str):
+        encoder_output = self.pipe.encode_prompt(
+            prompt=prompt,
+            device=self.device,
+            num_images_per_prompt=1,
+            do_classifier_free_guidance=False,
+        )
+        return encoder_output[0].repeat(self.batch_size, 1, 1)
+    
+    def update_prompt_embeds(self, prompt_embeds: Any) -> None:
+        self.prompt_embeds = prompt_embeds
 
     def add_noise(
         self,
